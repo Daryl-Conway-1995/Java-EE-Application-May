@@ -1,6 +1,6 @@
-/.idea/
-/log.txt
-/out/
-/TerraFrame.iml
-/worlds/
-/bin/
+.settings
+target
+.classpath
+.factorypath
+.project
+bin
