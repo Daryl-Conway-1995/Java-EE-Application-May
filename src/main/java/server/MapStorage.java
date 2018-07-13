@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
 import accounts.Account;
 import constants.Constants;
+import util.JsonConverter;
 
 @Alternative
 public class MapStorage implements Storage {
@@ -15,12 +17,15 @@ public class MapStorage implements Storage {
 	private HashMap<Long, Account> map = new HashMap<Long, Account>();
 	private Authentication auth;
 	
-	public Account getAccount(Long id) {
+	@Inject
+	private JsonConverter jsonCon;
+	
+	public String getAccount(Long id) {
 		if(map.containsKey(id)) {
-			return map.get(id);
+			return jsonCon.objectConvert(map.get(id));
 		}
 		else {
-			return null;
+			return Constants.ERROR_MESSAGE;
 		}
 	}
 
@@ -33,8 +38,12 @@ public class MapStorage implements Storage {
 		}
 	}
 
-	public String addAccount(Account account) {
-		if(Constants.ADDITION_MESSAGE.equals(auth.IdCheck(account.getId()))) {
+	public String addAccount(String StringAccount) {
+		Account account = jsonCon.jsonConvert(StringAccount, Account.class);
+		if(auth.isBanned(account.getId())) {
+			return Constants.BANNED_ACCOUNT_MESSAGE;
+		}
+		else {
 			if (map.containsKey(account.getId())) {
 				return Constants.COLLISION_MESSAGE;
 			} else {
@@ -42,12 +51,9 @@ public class MapStorage implements Storage {
 				return Constants.ADDITION_MESSAGE;
 			}
 		}
-		else {
-			return Constants.BANNED_ACCOUNT_MESSAGE;
-		}
 	}
 	
-	public List<Account> getAllAccounts(){
+	public String getAllAccounts(){
 		List<Account> list;
 		if (map.values() instanceof List)
 		  list = (List<Account>)map.values();
@@ -55,15 +61,13 @@ public class MapStorage implements Storage {
 		{
 		  list = new ArrayList<Account>(map.values());
 		}
-		return list;
+		return jsonCon.objectConvert(list);
 	}
 
-	public Account updateAccount(Account account, String firstName, String lastName, String accountNumber) {
-		account.setAccountNumber(accountNumber);
-		account.setFirstName(firstName);
-		account.setLastName(lastName);
-		map.replace(account.getId(), account);
-		return map.get(account.getId());
+	public String updateAccount(String account) {
+		Account newobj =jsonCon.jsonConvert(account, Account.class);
+		map.replace(newobj.getId(), newobj);
+		return jsonCon.objectConvert(map.get(newobj.getId()));
 	}
 
 }

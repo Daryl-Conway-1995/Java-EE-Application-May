@@ -6,13 +6,13 @@ import accounts.Account;
 
 public interface Storage {
 
-	Account getAccount(Long id);
+	String getAccount(Long id);
 	
 	String deleteAccount(Long id);
 	
-	String addAccount(Account account);
+	String addAccount(String account);
 	
-	List<Account> getAllAccounts();
+	String getAllAccounts();
 	
-	 public Account updateAccount(Account account,String firstName,String lastName,String accountNumber); 
+	String updateAccount(String account); 
 }

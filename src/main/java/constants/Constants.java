@@ -2,8 +2,8 @@ package constants;
 
 public class Constants {
 	
-	public static final String FIND_ALL_ACCOUNTS = "SELECT a FROM ACCOUNT a ORDER BY a.firstName DESC";
-	public static final String DELETE_ACCOUNT = "DELETE a FROM ACCOUNT a WHERE a.id =";
+	public static final String FIND_ALL_ACCOUNTS = "SELECT a FROM Account a ORDER BY a.id DESC";
+	public static final String DELETE_ACCOUNT = "DELETE a FROM Account a WHERE a.id =";
 	public static final String DELETE_MESSAGE = "account deleted.";
 	public static final String ADDITION_MESSAGE = "account added.";
 	public static final String ERROR_MESSAGE = "Requested account can not be found.";

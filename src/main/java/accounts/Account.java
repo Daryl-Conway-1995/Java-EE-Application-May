@@ -1,7 +1,5 @@
 package accounts;
 
-
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +12,7 @@ import java.util.List;
 
 @Entity
 public class Account {
+	@Column
 	@Id @GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
 	@Column 
@@ -46,6 +45,9 @@ public class Account {
 	public Long getId() {
 		return id;
 	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	public String getFirstName() {
 		return firstName;
@@ -65,8 +67,11 @@ public class Account {
 	public void setAccountNumber(String accountNumber) {
 		AccountNumber = accountNumber;
 	}
+
 	@Override
 	public String toString() {
-		return "account [AccountNumber=" + AccountNumber + ", firstName=" + firstName + ", lastName=" + lastName + "]";
+		return "Account [id=" + id + ", AccountNumber=" + AccountNumber + ", firstName=" + firstName + ", lastName="
+				+ lastName + "]";
 	}
+
 }
