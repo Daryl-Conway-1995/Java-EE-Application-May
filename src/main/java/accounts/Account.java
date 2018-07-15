@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 public class Account {
 	@Column
-	@Id @GeneratedValue(strategy=GenerationType.AUTO)
+	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	@Column 
 	@Size (min=6, max=6)

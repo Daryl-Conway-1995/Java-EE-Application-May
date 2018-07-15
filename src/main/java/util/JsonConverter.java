@@ -13,12 +13,12 @@ public class JsonConverter {
 		this.gson = new Gson();
 	}
 	
-	public String objectConvert(Object obj) {
+	public String objectToJson(Object obj) {
 		return gson.toJson(obj);
 	}
 
 	
-	public <T> T jsonConvert(String jsonString, Class<T> list) {
+	public <T> T jsonToObject(String jsonString, Class<T> list) {
 		return gson.fromJson(jsonString, (Type) list);
 	}
 }

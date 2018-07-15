@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
@@ -12,17 +13,24 @@ import constants.Constants;
 import util.JsonConverter;
 
 @Alternative
+@ApplicationScoped
 public class MapStorage implements Storage {
 
-	private HashMap<Long, Account> map = new HashMap<Long, Account>();
+	private HashMap<Long, Account> map;
 	private Authentication auth;
+	private Long id;
 	
 	@Inject
 	private JsonConverter jsonCon;
 	
+	public MapStorage() {
+		this.map = new HashMap<Long, Account>();
+		this.id = 0L;
+	}
+	
 	public String getAccount(Long id) {
 		if(map.containsKey(id)) {
-			return jsonCon.objectConvert(map.get(id));
+			return jsonCon.objectToJson(map.get(id));
 		}
 		else {
 			return Constants.ERROR_MESSAGE;
@@ -39,35 +47,27 @@ public class MapStorage implements Storage {
 	}
 
 	public String addAccount(String StringAccount) {
-		Account account = jsonCon.jsonConvert(StringAccount, Account.class);
-		if(auth.isBanned(account.getId())) {
-			return Constants.BANNED_ACCOUNT_MESSAGE;
-		}
-		else {
-			if (map.containsKey(account.getId())) {
-				return Constants.COLLISION_MESSAGE;
-			} else {
-				map.put(account.getId(), account);
-				return Constants.ADDITION_MESSAGE;
-			}
-		}
+		id++;
+		Account newAccount = jsonCon.jsonToObject(StringAccount,Account.class);
+		newAccount.setId(id);
+		map.put(id, newAccount);
+		return Constants.ADDITION_MESSAGE;
 	}
 	
 	public String getAllAccounts(){
-		List<Account> list;
-		if (map.values() instanceof List)
-		  list = (List<Account>)map.values();
-		else
-		{
-		  list = new ArrayList<Account>(map.values());
-		}
-		return jsonCon.objectConvert(list);
+		return jsonCon.objectToJson(map.values());
 	}
 
-	public String updateAccount(String account) {
-		Account newobj =jsonCon.jsonConvert(account, Account.class);
-		map.replace(newobj.getId(), newobj);
-		return jsonCon.objectConvert(map.get(newobj.getId()));
+	public String updateAccount(Long id, String account) {
+		try {
+			Account alteredAccount = jsonCon.jsonToObject(account, Account.class);
+			alteredAccount.setId(id);
+			map.replace(id,alteredAccount);
+			return jsonCon.objectToJson(map.get(id));
+		}
+		catch (Error e) {
+			return Constants.ACCOUNT_REJECTED;
+		}
 	}
 
 }

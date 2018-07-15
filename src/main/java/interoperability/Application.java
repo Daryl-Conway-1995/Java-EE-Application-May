@@ -31,11 +31,11 @@ public class Application {
 		return storage.addAccount(account);
 	}
 
-	@Path("/update/{id}")
+	@Path("/updateAccountNumber/{id}")
 	@PUT
 	@Produces({ "application/json" })
-	public String updateAccount(@PathParam("id") Long id, String account) {
-		return storage.updateAccount(account);
+	public String updateAccount(@PathParam("id") Long id, String accountNumber) {
+		return storage.updateAccount(id, accountNumber);
 	}
 
 	@Path("/delete/{id}")

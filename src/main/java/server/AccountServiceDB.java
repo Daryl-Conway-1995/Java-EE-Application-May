@@ -27,31 +27,37 @@ public class AccountServiceDB implements Storage{
 	public String getAllAccounts() {
         TypedQuery<Account> query = manager.createQuery(Constants.FIND_ALL_ACCOUNTS, Account.class);
         Collection<Account> accounts = (Collection<Account>) query.getResultList();
-        return jsonCon.objectConvert(accounts);
+        return jsonCon.objectToJson(accounts);
 	}
         
     public String getAccount(Long id) {
-            return jsonCon.objectConvert(manager.find(Account.class, id));
+            return jsonCon.objectToJson(manager.find(Account.class, id));
      }
     
     @Transactional(TxType.REQUIRED)
     public String deleteAccount(Long id) {
     	manager.remove(manager.find(Account.class, id));
-//    	manager.createQuery("DELETE a FROM Account a WHERE a.id ="+id, Account.class);
     	return Constants.DELETE_MESSAGE;
-    	//Constants.DELETE_ACCOUNT
     }
     
     @Transactional(TxType.REQUIRED)
-    public String updateAccount(String account) {
-    	Account updatedAccount = jsonCon.jsonConvert(account, Account.class);
-    	manager.refresh(updatedAccount);
-    	return jsonCon.objectConvert(account);
+    public String updateAccount(Long id, String account) {
+    	try {
+    	manager.find(Account.class, id);
+		Account newAccount = jsonCon.jsonToObject(account, Account.class);
+		manager.find(Account.class, id).setAccountNumber(newAccount.getAccountNumber());
+		manager.find(Account.class, id).setFirstName(newAccount.getFirstName());
+		manager.find(Account.class, id).setLastName(newAccount.getLastName());
+		return jsonCon.objectToJson(manager.find(Account.class, id));
+    	}
+    	catch (Error e) {
+		return Constants.ACCOUNT_REJECTED;
+    	}
     }
     
     @Transactional(TxType.REQUIRED)
     public String addAccount(String newAccount) {
-    	Account account = jsonCon.jsonConvert(newAccount, Account.class);
+    	Account account = jsonCon.jsonToObject(newAccount, Account.class);
     	if(auth.isBanned(account.getId())) { 
         	return Constants.BANNED_ACCOUNT_MESSAGE;
     	}

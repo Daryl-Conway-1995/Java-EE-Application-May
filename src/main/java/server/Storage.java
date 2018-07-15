@@ -14,5 +14,5 @@ public interface Storage {
 	
 	String getAllAccounts();
 	
-	String updateAccount(String account); 
+	String updateAccount(Long id, String account); 
 }
