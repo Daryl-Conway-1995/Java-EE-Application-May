@@ -31,7 +31,7 @@ public class Application {
 		return storage.addAccount(account);
 	}
 
-	@Path("/updateAccountNumber/{id}")
+	@Path("/updateAccount/{id}")
 	@PUT
 	@Produces({ "application/json" })
 	public String updateAccount(@PathParam("id") Long id, String accountNumber) {

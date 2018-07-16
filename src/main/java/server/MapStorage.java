@@ -40,7 +40,7 @@ public class MapStorage implements Storage {
 	public String deleteAccount(Long id) {
 		if (map.containsKey(id)) {
 			map.remove(id);
-			return id + Constants.DELETE_MESSAGE;
+			return Constants.DELETE_MESSAGE+id;
 		} else {
 			return Constants.ERROR_MESSAGE;
 		}
@@ -59,13 +59,12 @@ public class MapStorage implements Storage {
 	}
 
 	public String updateAccount(Long id, String account) {
-		try {
+		if (map.keySet().contains(id)) {
 			Account alteredAccount = jsonCon.jsonToObject(account, Account.class);
 			alteredAccount.setId(id);
-			map.replace(id,alteredAccount);
-			return jsonCon.objectToJson(map.get(id));
-		}
-		catch (Error e) {
+			map.replace(id, alteredAccount);
+			return Constants.ACCOUNT_UPDATED;
+		} else {
 			return Constants.ACCOUNT_REJECTED;
 		}
 	}

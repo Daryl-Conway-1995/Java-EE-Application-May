@@ -37,22 +37,20 @@ public class AccountServiceDB implements Storage{
     @Transactional(TxType.REQUIRED)
     public String deleteAccount(Long id) {
     	manager.remove(manager.find(Account.class, id));
-    	return Constants.DELETE_MESSAGE;
+    	return Constants.DELETE_MESSAGE+id;
     }
     
     @Transactional(TxType.REQUIRED)
     public String updateAccount(Long id, String account) {
-    	try {
-    	manager.find(Account.class, id);
-		Account newAccount = jsonCon.jsonToObject(account, Account.class);
-		manager.find(Account.class, id).setAccountNumber(newAccount.getAccountNumber());
-		manager.find(Account.class, id).setFirstName(newAccount.getFirstName());
-		manager.find(Account.class, id).setLastName(newAccount.getLastName());
-		return jsonCon.objectToJson(manager.find(Account.class, id));
-    	}
-    	catch (Error e) {
-		return Constants.ACCOUNT_REJECTED;
-    	}
+		if (manager.contains(id)) {
+			Account newAccount = jsonCon.jsonToObject(account, Account.class);
+			manager.find(Account.class, id).setAccountNumber(newAccount.getAccountNumber());
+			manager.find(Account.class, id).setFirstName(newAccount.getFirstName());
+			manager.find(Account.class, id).setLastName(newAccount.getLastName());
+			return Constants.ACCOUNT_UPDATED;
+		} else {
+			return Constants.ACCOUNT_REJECTED;
+		}
     }
     
     @Transactional(TxType.REQUIRED)
